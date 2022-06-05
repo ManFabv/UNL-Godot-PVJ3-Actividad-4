@@ -5,7 +5,8 @@
 [node name="main" type="Node2D"]
 
 [node name="player" parent="." instance=ExtResource( 1 )]
+frame = 0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 0.15, 0.15 )
+zoom = Vector2( 0.07, 0.07 )
