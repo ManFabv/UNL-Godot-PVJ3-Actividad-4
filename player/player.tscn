@@ -28,6 +28,7 @@ animations = [ {
 material = ExtResource( 2 )
 frames = SubResource( 4 )
 animation = "idle"
+frame = 2
 playing = true
 script = ExtResource( 3 )
 weapon_1_tint = Color( 0.988235, 0.0156863, 0.0156863, 1 )
