@@ -10,6 +10,9 @@ uniform float tint_apply_treshold : hint_range(0.1, 1.0) = 0.75;
 //si debe o no aplicar el tint
 uniform bool apply_tint = false;
 
+//si debe cambiar el color para hacer el weapon charge
+uniform bool apply_charge = false;
+
 void fragment()
 {
 	vec4 pixel_color = texture(TEXTURE, UV);

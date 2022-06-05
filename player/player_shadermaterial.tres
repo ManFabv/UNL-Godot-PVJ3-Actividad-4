@@ -7,3 +7,4 @@ shader = ExtResource( 1 )
 shader_param/tint_color = Color( 0.964706, 0.0862745, 0.188235, 1 )
 shader_param/tint_apply_treshold = 0.75
 shader_param/apply_tint = false
+shader_param/apply_charge = false
