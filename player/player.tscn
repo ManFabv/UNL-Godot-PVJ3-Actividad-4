@@ -28,9 +28,15 @@ animations = [ {
 material = ExtResource( 2 )
 frames = SubResource( 4 )
 animation = "idle"
-frame = 2
 playing = true
 script = ExtResource( 3 )
 weapon_1_tint = Color( 0.988235, 0.0156863, 0.0156863, 1 )
 weapon_2_tint = Color( 0.121569, 0.964706, 0.027451, 1 )
 weapon_3_tint = Color( 0.682353, 0.0235294, 0.952941, 1 )
+weapon_charge_1_tint = Color( 0, 0.741176, 1, 1 )
+weapon_charge_2_tint = Color( 0.686275, 1, 0, 1 )
+
+[node name="StartSecondChargeTimer" type="Timer" parent="."]
+wait_time = 2.0
+
+[connection signal="timeout" from="StartSecondChargeTimer" to="." method="_on_StartSecondChargeTimer_timeout"]

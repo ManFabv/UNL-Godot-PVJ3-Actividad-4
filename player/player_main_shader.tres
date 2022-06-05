@@ -10,21 +10,41 @@ uniform float tint_apply_treshold : hint_range(0.1, 1.0) = 0.75;
 //si debe o no aplicar el tint
 uniform bool apply_tint = false;
 
+//color de tint a aplicar al sprite
+uniform vec4 charge_color : hint_color = vec4(0.5, 0.5, 0.5, 1.0);
+//si el pixel tiene un brillo menor (la suma de los colores de cada channel dividido en cantidad de canales de color), aplica el charge
+uniform float charge_apply_treshold : hint_range(0.1, 1.0) = 0.75;
 //si debe cambiar el color para hacer el weapon charge
 uniform bool apply_charge = false;
+// el cambio de color no no descendera de este valor por canal de color
+uniform float min_threshold_charge_oscilation : hint_range(0.1, 1.0) = 0.4;
+// la \"velocidad\" de oscilar con el cambio de color
+uniform float charge_oscilation_velocity : hint_range(1, 100) = 40;
+// el factor de \"brillo\" extra al cambio de color
+uniform float extra_charge_brightness : hint_range(1, 2) = 1.3;
 
-vec4 apply_tint_to_pixel(vec4 pixel_color)
+float get_pixel_brightness(vec4 pixel_color)
 {
-	// si el color actual se pasa un cierto valor, consideramos que no se tiene que aplicar el tint
-	// esto nos sirve para evitar por ejemplo, aplicar el tint en la cara del personaje
+	// si el color actual se pasa un cierto valor, consideramos que no se tiene que aplicar el efecto
+	// esto nos sirve para evitar por ejemplo, aplicar el efecto en la cara del personaje
 	// Se trata del \"promedio\" del color del pixel
-	float pixel_brightness = (pixel_color.r + pixel_color.g + pixel_color.b) / 3.0;
-	// tomamos el color \"neutro\" para poder multiplicarlo por el tint
-	vec4 grayscale = vec4(pixel_brightness, pixel_brightness, pixel_brightness, pixel_color.a);
+	return (pixel_color.r + pixel_color.g + pixel_color.b) / 3.0;
+}
+
+vec4 get_grayscale(vec4 pixel_color, float pixel_brightness)
+{
+	// tomamos el color \"neutro\" para poder multiplicarlo por el efecto que queramos aplicar
+	return vec4(pixel_brightness, pixel_brightness, pixel_brightness, pixel_color.a);
+}
+
+vec4 apply_tint_to_pixel(vec4 pixel_color, float tint_threshold)
+{
+	float pixel_brightness = get_pixel_brightness(pixel_color);
+	vec4 grayscale = get_grayscale(pixel_color, pixel_brightness);
 	
 	// si tiene que aplicar el tint (se selecciono un arma distinta a default)
 	// y ademas el threshold de brillo se cumple, aplicamos el tint
-	if(pixel_brightness <= tint_apply_treshold)
+	if(pixel_brightness <= tint_threshold)
 	{
 		return grayscale * tint_color; //\"anulamos\" el color y aplicamos el tint
 	}
@@ -34,9 +54,29 @@ vec4 apply_tint_to_pixel(vec4 pixel_color)
 	}
 }
 
-vec4 apply_charge_to_pixel(vec4 pixel_color)
+vec4 apply_charge_to_pixel(vec4 pixel_color, float charge_threshold)
 {
-	return pixel_color;
+	float pixel_brightness = get_pixel_brightness(pixel_color);
+	vec4 grayscale = get_grayscale(pixel_color, pixel_brightness);
+	
+	// si tiene que aplicar el charge (se esta cargando el disparo)
+	// y ademas el threshold de brillo se cumple, aplicamos el charge
+	if(pixel_brightness <= charge_threshold)
+	{
+		// basamos el cambio de color en el tiempo y valor positivo del sin salir del rango [oscilation_factor, 1.0]
+		float oscilation_factor = max(1.0, min_threshold_charge_oscilation + abs(sin(TIME * charge_oscilation_velocity)));
+		// \"anulamos\" el color y aplicamos el charge
+		vec4 new_pixel_color = grayscale * oscilation_factor * charge_color;
+		// restauramos el alfa para que no sufra modificacion
+		new_pixel_color.a = pixel_color.a;
+		// aplicamos un brillo extra al color final
+		new_pixel_color *= extra_charge_brightness;
+		return new_pixel_color;
+	}
+	else // de lo contrario aplicamos el color normal
+	{
+		return pixel_color;
+	}
 }
 
 void fragment()
@@ -45,15 +85,15 @@ void fragment()
 	
 	if(apply_charge)
 	{
-		COLOR = apply_charge_to_pixel(pixel_color * 2.0f);
+		COLOR = apply_charge_to_pixel(pixel_color, charge_apply_treshold);
 	}
-	else if(!apply_tint) //si no tenemos que aplicar el tint, aplicamos el color normal
+	else if(apply_tint) //aplicamos el tint
+	{
+		COLOR = apply_tint_to_pixel(pixel_color, tint_apply_treshold);
+	}
+	else //si no tenemos que aplicar el tint o charge, aplicamos el color normal
 	{
 		COLOR = pixel_color;
-	}
-	else //aplicamos el tint
-	{
-		COLOR = apply_tint_to_pixel(pixel_color);
 	}
 }
 "
