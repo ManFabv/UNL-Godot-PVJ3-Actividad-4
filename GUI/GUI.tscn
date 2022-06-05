@@ -1,0 +1,18 @@
+[gd_scene format=2]
+
+[node name="GUI" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -844.0
+margin_bottom = -500.0
+rect_scale = Vector2( 0.1, 0.1 )
+
+[node name="Label" type="Label" parent="."]
+anchor_right = 1.0
+margin_bottom = 14.0
+text = "1: select weapon 1
+2: select weapon 2
+3: select weapon 3
+4: select weapon default
+
+space: keep press to charge"

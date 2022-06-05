@@ -1,16 +1,27 @@
 extends AnimatedSprite
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+export var weapon_1_tint : Color;
+export var weapon_2_tint : Color;
+export var weapon_3_tint : Color;
+
+onready var sprite_material = get_material();
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _input(event):
+	if(event.is_action_pressed("select_weapon_1")):
+		sprite_material.set_shader_param("apply_tint", true)
+		sprite_material.set_shader_param("tint_color", weapon_1_tint)
+	elif(event.is_action_pressed("select_weapon_2")):
+		sprite_material.set_shader_param("apply_tint", true)
+		sprite_material.set_shader_param("tint_color", weapon_2_tint)
+	elif(event.is_action_pressed("select_weapon_3")):
+		sprite_material.set_shader_param("apply_tint", true)
+		sprite_material.set_shader_param("tint_color", weapon_3_tint)
+	elif(event.is_action_pressed("select_weapon_default")):
+		sprite_material.set_shader_param("apply_tint", false)
+	
+	if(event.is_action_pressed("select_weapon_charge")):
+		print("space pressed")
+	elif(event.is_action_released("select_weapon_charge")):
+		print("space released")

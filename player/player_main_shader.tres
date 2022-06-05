@@ -3,22 +3,31 @@
 [resource]
 code = "shader_type canvas_item;
 
+//color de tint a aplicar al sprite
 uniform vec4 tint_color : hint_color = vec4(0.5, 0.5, 0.5, 1.0);
+//si el pixel tiene un brillo menor (la suma de los colores de cada channel dividido en cantidad de canales de color), aplica el tint
 uniform float tint_apply_treshold : hint_range(0.1, 1.0) = 0.75;
+//si debe o no aplicar el tint
 uniform bool apply_tint = false;
 
 void fragment()
 {
 	vec4 pixel_color = texture(TEXTURE, UV);
 	
-	float brightness = (pixel_color.r + pixel_color.g + pixel_color.b) / 3.0;
-	vec4 grayscale = vec4(brightness, brightness, brightness, pixel_color.a);
+	// si el color actual se pasa un cierto valor, consideramos que no se tiene que aplicar el tint
+	// esto nos sirve para evitar por ejemplo, aplicar el tint en la cara del personaje
+	// Se trata del \"promedio\" del color del pixel
+	float pixel_brightness = (pixel_color.r + pixel_color.g + pixel_color.b) / 3.0;
+	// tomamos el color \"neutro\" para poder multiplicarlo por el tint
+	vec4 grayscale = vec4(pixel_brightness, pixel_brightness, pixel_brightness, pixel_color.a);
 	
-	if(apply_tint && brightness <= tint_apply_treshold)
+	// si tiene que aplicar el tint (se selecciono un arma distinta a default)
+	// y ademas el threshold de brillo se cumple, aplicamos el tint
+	if(apply_tint && pixel_brightness <= tint_apply_treshold)
 	{
-		COLOR = grayscale * tint_color;
+		COLOR = grayscale * tint_color; //\"anulamos\" el color y aplicamos el tint
 	}
-	else
+	else // de lo contrario aplicamos el color normal
 	{
 		COLOR = pixel_color;
 	}

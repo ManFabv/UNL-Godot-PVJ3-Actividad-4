@@ -31,3 +31,6 @@ animation = "idle"
 frame = 1
 playing = true
 script = ExtResource( 3 )
+weapon_1_tint = Color( 0.988235, 0.0156863, 0.0156863, 1 )
+weapon_2_tint = Color( 0.121569, 0.964706, 0.027451, 1 )
+weapon_3_tint = Color( 0.682353, 0.0235294, 0.952941, 1 )
