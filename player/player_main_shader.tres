@@ -14,22 +14,29 @@ void fragment()
 {
 	vec4 pixel_color = texture(TEXTURE, UV);
 	
-	// si el color actual se pasa un cierto valor, consideramos que no se tiene que aplicar el tint
-	// esto nos sirve para evitar por ejemplo, aplicar el tint en la cara del personaje
-	// Se trata del \"promedio\" del color del pixel
-	float pixel_brightness = (pixel_color.r + pixel_color.g + pixel_color.b) / 3.0;
-	// tomamos el color \"neutro\" para poder multiplicarlo por el tint
-	vec4 grayscale = vec4(pixel_brightness, pixel_brightness, pixel_brightness, pixel_color.a);
-	
-	// si tiene que aplicar el tint (se selecciono un arma distinta a default)
-	// y ademas el threshold de brillo se cumple, aplicamos el tint
-	if(apply_tint && pixel_brightness <= tint_apply_treshold)
-	{
-		COLOR = grayscale * tint_color; //\"anulamos\" el color y aplicamos el tint
-	}
-	else // de lo contrario aplicamos el color normal
+	if(!apply_tint) //si no tenemos que aplicar el tint, aplicamos el color normal
 	{
 		COLOR = pixel_color;
+	}
+	else //aplicamos el tint
+	{
+		// si el color actual se pasa un cierto valor, consideramos que no se tiene que aplicar el tint
+		// esto nos sirve para evitar por ejemplo, aplicar el tint en la cara del personaje
+		// Se trata del \"promedio\" del color del pixel
+		float pixel_brightness = (pixel_color.r + pixel_color.g + pixel_color.b) / 3.0;
+		// tomamos el color \"neutro\" para poder multiplicarlo por el tint
+		vec4 grayscale = vec4(pixel_brightness, pixel_brightness, pixel_brightness, pixel_color.a);
+		
+		// si tiene que aplicar el tint (se selecciono un arma distinta a default)
+		// y ademas el threshold de brillo se cumple, aplicamos el tint
+		if(pixel_brightness <= tint_apply_treshold)
+		{
+			COLOR = grayscale * tint_color; //\"anulamos\" el color y aplicamos el tint
+		}
+		else // de lo contrario aplicamos el color normal
+		{
+			COLOR = pixel_color;
+		}
 	}
 }
 "
