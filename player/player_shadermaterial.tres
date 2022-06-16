@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://player/player_main_shader.tres" type="Shader" id=1]
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/tint_color = Color( 0.964706, 0.0862745, 0.188235, 1 )
+shader_param/tint_apply_treshold = 0.75
+shader_param/apply_tint = false
+shader_param/charge_color = Color( 0.858824, 0.996078, 0.47451, 1 )
+shader_param/charge_apply_treshold = 0.75
+shader_param/apply_charge = false
+shader_param/min_threshold_charge_oscilation = 0.4
+shader_param/charge_oscilation_velocity = 40.0
+shader_param/extra_charge_brightness = 1.3
